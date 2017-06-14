@@ -36,8 +36,19 @@ const reducerImg = (state = false, action) => {
   }
 }
 
+//// Reducerをまとめる
+//const combineReducers = reducers => (state = {}, action) => Object.keys(reducers).reduce((nextState, key) => {
+//  nextState[key] = reducers[key](state[key],action);
+//  return nextState;
+//}, {});
+//
+//const rootReducer = combineReducers({ reducerURL, reducerImg });
+
+
 // 上記の書き方が謎すぎて、理解のためにバラしてES5で書いた。
-// Reducerをまとめると書いてあるが、stateオブジェクトを生成して返す関数を生成している。
+// Reducerをまとめると書いてあるが、実態はReducersをクロージャで保持して、
+// まとめて実行できる状態にして、実行するとstateオブジェクトを生成して返す関数を生成している。
+// this.props.dispatch({ type: "INCREMENT" });を動かした時に動く関数を生成しているイメージ
 var createExecAllReducersFunc = function(reducers) {
   var execAllReducersFunc = function(state = {}, action) {
     var arr = Object.keys(reducers);
@@ -53,15 +64,8 @@ var createExecAllReducersFunc = function(reducers) {
 };
 const rootReducer = createExecAllReducersFunc({ reducerURL:reducerURL, reducerImg:reducerImg });
 console.log(rootReducer);
-console.log(rootReducer(1,{type:'GET_IMG'}));
+console.log(rootReducer({}, {type:'GET_IMG'}));
 
-//// Reducerをまとめる
-//const combineReducers = reducers => (state = {}, action) => Object.keys(reducers).reduce((nextState, key) => {
-//  nextState[key] = reducers[key](state[key],action);
-//  return nextState;
-//}, {});
-//
-//const rootReducer = combineReducers({ reducerURL, reducerImg });
 
 // Store, Provider, Render
 const store = Redux.createStore(rootReducer); // storeの作成
