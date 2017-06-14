@@ -36,21 +36,22 @@ const reducerImg = (state = false, action) => {
   }
 }
 
-
-var aaa = function(reducers) {
-  var bbb = function(state = {}, action) {
+// 上記の書き方が謎すぎて、理解のためにバラしてES5で書いた。
+// Reducerをまとめると書いてあるが、stateオブジェクトを生成して返す関数を生成している。
+var createExecAllReducersFunc = function(reducers) {
+  var execAllReducersFunc = function(state = {}, action) {
     var arr = Object.keys(reducers);
-    var obj = arr.reduce(function(nextState, key) {
+    var stateObj = arr.reduce(function(nextState, key) {
       nextState[key] = reducers[key](state[key],action);
       return nextState;
     }, {});
     
-    return obj;
+    return stateObj;
   };
   
-  return bbb;
+  return execAllReducersFunc;
 };
-const rootReducer = aaa({ reducerURL:reducerURL, reducerImg:reducerImg });
+const rootReducer = createExecAllReducersFunc({ reducerURL:reducerURL, reducerImg:reducerImg });
 console.log(rootReducer);
 console.log(rootReducer(1,{type:'GET_IMG'}));
 
