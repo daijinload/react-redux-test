@@ -46,9 +46,15 @@ const reducerImg = (state = false, action) => {
 
 
 // 上記の書き方が謎すぎて、理解のためにバラしてES5で書いた。
-// Reducerをまとめると書いてあるが、実態はReducersをクロージャで保持して、
-// まとめて実行できる状態にして、実行するとstateオブジェクトを生成して返す関数を生成している。
-// this.props.dispatch({ type: "INCREMENT" });を動かした時に動く関数を生成しているイメージ
+// 
+// 処理内容は、reducerをcreateStoreに渡してstoreを作成したいが、
+// 複数のreducerを登録出来ないので、複数のreducerを実行するreducer関数を作成している。
+// 
+// 具体的には、Reducersをクロージャで保持して、まとめて実行できる状態にして、
+// 実行すると１つのstateオブジェクトを生成して返す関数を生成している。
+// 
+// こんなトリッキーコードをサンプルとして用意して良いのだろうか？と突っ込みたくなる。
+// 別に一個のreducerを使うサンプルでも良かった気がする。。。
 var createExecAllReducersFunc = function(reducers) {
   var execAllReducersFunc = function(state = {}, action) {
     var arr = Object.keys(reducers);
@@ -65,7 +71,7 @@ var createExecAllReducersFunc = function(reducers) {
 const rootReducer = createExecAllReducersFunc({ reducerURL:reducerURL, reducerImg:reducerImg });
 console.log(rootReducer);
 console.log(rootReducer({}, {type:'GET_IMG'}));
-
+debugger;
 
 // Store, Provider, Render
 const store = Redux.createStore(rootReducer); // storeの作成
